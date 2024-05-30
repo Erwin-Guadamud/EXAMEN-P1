@@ -12,3 +12,41 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Paciente {
+  id             Int               @id @default(autoincrement())
+  nombre         String
+  identificacion String
+  controles      ControlRealizado[]
+  estado         String            @default("activo")
+}
+
+model SignoVital {
+  id             Int               @id @default(autoincrement())
+  descripcion    String
+  nivelMinimo    Int
+  nivelMaximo    Int
+  controles      ControlRealizado[]
+  estado         String            @default("activo")
+}
+
+model ControlRealizado {
+  id           Int         @id @default(autoincrement())
+  pacienteId   Int
+  signoVitalId Int
+  paciente     Paciente    @relation(fields: [pacienteId], references: [id])
+  signoVital   SignoVital  @relation(fields: [signoVitalId], references: [id])
+  fecha        DateTime
+  hora         DateTime
+  valor        Int
+  estado       String      @default("activo")
+}
+
+model Auditoria {
+  id         Int      @id @default(autoincrement())
+  entidad    String
+  detalle    String
+  fecha      DateTime
+  id_Auditado Int
+  estado     String   @default("activo")
+}
